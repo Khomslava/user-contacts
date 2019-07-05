@@ -1,0 +1,64 @@
+<form class="user-form" action="" [formGroup]="userForm">
+    
+    <div class="user-profile">
+        <div class="user-profile__title">
+            <span>User profile</span>
+        </div>
+        
+        <div class="user-profile__content">
+            <mat-form-field appearance="outline">
+                <input matInput formControlName="name" placeholder="Name">
+                <mat-error *ngIf="hasError('name', 'required')">Name is required!</mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+                <input matInput formControlName="organization" placeholder="Organization">
+            </mat-form-field>
+        </div>
+    </div>
+
+    <div class="contact-infromations">
+        <div class="contact-infromations__title">
+            <span>Contact information</span>
+        </div>
+
+        <div class="contact-infromations__list">
+            <div class="contact-infromation" formArrayName="contactInformations" *ngFor="let item of userForm.get('contactInformations').controls; let i = index;">
+                <div [formGroupName]="i" class="contact-infromation__content">
+
+                    <div class="row">
+                        <mat-form-field appearance="outline">
+                            <mat-label>Type of Contact</mat-label>
+                            <mat-select formControlName="type" (selectionChange)="changeLabelValidation($event, i)">
+                                <mat-option *ngFor="let type of contactTypes" [value]="type">
+                                    {{type}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+
+                        <mat-form-field appearance="outline">
+                            <input matInput formControlName="label" placeholder="Contact Label">
+                            <mat-error *ngIf="hasError('label', 'required', 'contactInformations', i)">Label is required!</mat-error>
+                        </mat-form-field>
+                    </div>
+
+                    <mat-form-field appearance="outline">
+                        <input matInput formControlName="value" placeholder="Email/Phone No.">
+                        <mat-error *ngIf="hasError('value', 'required', 'contactInformations', i)">Email/Phone no. is required!</mat-error>
+                        <mat-error *ngIf="hasError('value', 'email', 'contactInformations', i)">Email is not valid!</mat-error>
+                        <mat-error *ngIf="hasError('value', 'pattern', 'contactInformations', i)">Phone no. is not valid!</mat-error>
+                    </mat-form-field>
+    
+                </div>
+
+                <button class="button-remove-contact" mat-raised-button color="warn" (click)="removeContactInformation(i)">Remove</button>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="footer-buttons">
+        <button mat-raised-button color="primary" (click)="addContactInformation()">Add Contact</button>
+        <button mat-raised-button color="primary" [disabled]="!userForm.valid" (click)="saveUserProfile()">Save User Profile</button>
+    </div>
+</form>
